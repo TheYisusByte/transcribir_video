@@ -1,33 +1,40 @@
-"""
-Transcribir video (incluso de más de 1 hora) a texto, 100% gratis y local.
-
-Motor de transcripción: faster-whisper (reimplementación optimizada de
-Whisper con CTranslate2). Corre en tu CPU/GPU, sin necesidad de API key
-ni conexión a internet una vez descargado el modelo.
-
-INSTALACIÓN (una sola vez):
-    pip install faster-whisper python-docx tqdm
-
-    Además necesitas ffmpeg instalado en el sistema:
-    - Windows: descarga desde https://ffmpeg.org/download.html y agrega
-      la carpeta 'bin' al PATH (o instala con `winget install ffmpeg`)
-    - Verifica con: ffmpeg -version
-
-USO:
-    python transcribir_video.py "ruta/al/video.mp4"
-
-    Opcional, elegir tamaño de modelo (más grande = más preciso, más lento):
-    python transcribir_video.py "video.mp4" --modelo medium
-
-    Tamaños disponibles: tiny, base, small, medium, large-v3
-    Para español, "medium" da muy buen balance precisión/velocidad en CPU.
-    Si tienes GPU NVIDIA con CUDA, usa large-v3 y pasa --device cuda.
-
-SALIDA:
-    Genera en la misma carpeta del video:
-    - <nombre>_transcripcion.docx   (documento Word, con y sin timestamps)
-    - <nombre>_transcripcion.txt    (texto plano, por si lo necesitas)
-"""
+# ==============================================================================
+# 🛠️ MOTOR DE TRANSCRIPCIÓN LOCAL DE VIDEO - INSTRUCCIONES
+# ==============================================================================
+#
+#  ✒️ AUTORÍA:
+#  Desarrollado y optimizado por: YisusByte 🛠️🚀
+#
+#  📝 DESCRIPCIÓN:
+#  Transcribe video (incluso de más de 1 hora) a texto, 100% gratis y local.
+#  Motor de transcripción: faster-whisper (reimplementación optimizada de
+#  Whisper con CTranslate2). Corre en tu CPU/GPU, sin necesidad de API key
+#  ni conexión a internet una vez descargado el modelo.
+#
+#  📦 INSTALACIÓN (una sola vez):
+#      pip install faster-whisper python-docx tqdm
+#
+#      Además necesitas ffmpeg instalado en el sistema:
+#      - Windows: descarga desde https://ffmpeg.org/download.html y agrega
+#        la carpeta 'bin' al PATH (o instala con `winget install ffmpeg`)
+#      - Verifica con: ffmpeg -version
+#
+#  🚀 USO:
+#      python transcribir_video.py "ruta/al/video.mp4"
+#
+#      Opcional, elegir tamaño de modelo (más grande = más preciso, más lento):
+#      python transcribir_video.py "video.mp4" --modelo medium
+#
+#      Tamaños disponibles: tiny, base, small, medium, large-v3
+#      Para español, "medium" da muy buen balance precisión/velocidad en CPU.
+#      Si tienes GPU NVIDIA con CUDA, usa large-v3 y pasa --device cuda.
+#
+#  💾 SALIDA:
+#      Genera en la misma carpeta del video:
+#      - <nombre>_transcripcion.docx   (documento Word, con y sin timestamps)
+#      - <nombre>_transcripcion.txt    (texto plano, por si lo necesitas)
+#
+# ==============================================================================
 
 import argparse
 import subprocess
@@ -107,6 +114,12 @@ def generar_documento(segments, salida_docx: Path, salida_txt: Path, nombre_vide
     # --- DOCX con formato ---
     doc = Document()
     doc.add_heading(f"Transcripción: {nombre_video}", level=1)
+    
+    # Créditos de autoría automatizados en el Word
+    autor = doc.add_paragraph()
+    run_autor = autor.add_run("Generado automáticamente por la herramienta de YisusByte 🛠️🚀")
+    run_autor.italic = True
+    run_autor.font.size = Pt(9.5)
 
     doc.add_heading("Texto completo", level=2)
     p = doc.add_paragraph(texto_plano)
@@ -127,6 +140,11 @@ def generar_documento(segments, salida_docx: Path, salida_txt: Path, nombre_vide
 
 
 def main():
+    # Mensaje de bienvenida en consola
+    print("\n==================================================")
+    print(" 🛠️  YisusByte - Local Video Transcriber")
+    print("==================================================\n")
+
     parser = argparse.ArgumentParser(description="Transcribe un video largo a texto (gratis, local).")
     parser.add_argument("video", type=str, help="Ruta al archivo de video (mp4, mkv, mov, etc.)")
     parser.add_argument("--modelo", type=str, default="medium",
@@ -156,7 +174,7 @@ def main():
     # Limpieza del wav temporal
     audio_path.unlink(missing_ok=True)
 
-    print("\n✅ Listo.")
+    print("\n✅ Proceso completado con éxito por la herramienta de YisusByte.")
 
 
 if __name__ == "__main__":
